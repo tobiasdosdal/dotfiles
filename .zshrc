@@ -85,7 +85,11 @@ motd() {
   echo ""
 }
 
-# Show MOTD on new interactive shells (not in VSCode/IDE terminals)
+# Show MOTD after first prompt (avoids p10k instant prompt conflict)
 if [[ $- == *i* ]] && [[ -z "$VSCODE_INJECTION" ]] && [[ -z "$INTELLIJ_ENVIRONMENT_READER" ]]; then
-  motd
+  function _motd_precmd() {
+    motd
+    add-zsh-hook -d precmd _motd_precmd
+  }
+  add-zsh-hook precmd _motd_precmd
 fi
